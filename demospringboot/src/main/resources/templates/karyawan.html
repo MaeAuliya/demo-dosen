@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Home Page</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/form.css}" />
+        <script th:src="@{/js/home.js}"></script>
+    </head>
+    <body>
+        <div class="first-box">
+            <h2>Semua Karyawan</h2>
+            <table class="styled-table">
+                <thead>
+                <tr><th>No</th>
+                    <th>NIK</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Department</th>
+                </tr>
+                </thead>
+                <tbody th:each="d, no : ${empList}">
+                <tr th:with="checkid=${d.getId()}"><td th:text="${no.count}"></td>
+                    <td ><a th:href="@{/karyawan/{id}(id=${d.getEmpid()})}" th:text="${d.getNik()}"></a></td>
+                    <td th:text="${d.getFirstname()}"></td>
+                    <td th:text="${d.getLastname()}"></td>
+                    <td th:text="${depList.^[id==#root.checkid].name}"></td>
+                </tr>
+                </tbody>
+            </table>
+            
+        </div>
+
+        <div class="second-box">
+            <div id="feedback-form">
+            <h2 class="header">Karyawan Management</h2>
+            <form th:action="@{/karyawan/submit/{id}(id=${empRec?.getEmpid()})}" method="post" th:object="${depInfo}" class="form-group">
+                <label for="id" class="form-label">ID</label>
+                <input
+                    type="number"
+                    id = "empid"
+                    name = "empid"
+                    th:value="${empRec!=null}? ${empRec.getEmpid()} : '0'"
+                    readonly
+                />
+                <label for="firstname" class="form-label">NIK</label>
+                <input
+                    type="text"
+                    id="nik"
+                    name="nik"
+                    th:value="${empRec?.getNik()}" 
+                    required
+                />
+                <label for="lastname" class="form-label">Firstname</label>
+                <input
+                    type="text"
+                    id="firstname"
+                    name="firstname"
+                    th:value="${empRec?.getFirstname()}" 
+                    required
+                />
+                <label for="firstname" class="form-label">Lastname</label>
+                <input
+                    type="text"
+                    id="lastname"
+                    name="lastname"
+                    th:value="${empRec?.getLastname()}" 
+                    required
+                />
+                
+                <label for="password" class="form-label">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                />
+                <label for="confpassword" class="form-label">Confirm Password</label>
+                <input
+                    type="password"
+                    id="cpassword"
+                    name="cpassword"
+                    th:onkeyup="checkPass()"
+                />
+                <label for="department" class="form-label">Department</label>
+                <select name="id" id="id">
+                    <option th:each="d : ${depList}"
+                            th:value="${d.getId()}"
+                            th:text="${d.getName()}"
+                            th:selected="${empRec!=null}? (${d.getId()} == ${empRec?.getId()})"
+                    >
+                    </option>
+                </select>
+                <div id = "warning"></div>
+                <button type="submit" class="btn btn-primary" name="add">Add</button>
+                <button type="submit" class="btn btn-primary" name="edit">Edit</button>
+                <button type="submit" class="btn btn-primary" name="delete">Delete</button>
+            </form>
+            </div>
+        </div>
+
+    </body>
+</html>
